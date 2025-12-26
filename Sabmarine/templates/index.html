@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <section id="overview" class="hero">
+    <div>
+      <p class="eyebrow">Live Ops + ML Assist</p>
+      <h1>Command the Submarine with confidence.</h1>
+      <p class="lede">Manual precision, Auto intelligence, and safety-first controls in one secure dashboard. Live video, telemetry, alerts, mission logging, and a two-stage Auto button keep the 1.5 m sub predictable.</p>
+      <div class="cta-row">
+        <button class="btn primary" id="armAutoBtn">Arm Auto</button>
+        <button class="btn ghost" id="startAutoBtn">Start Auto</button>
+        <button class="btn ghost" id="abortAutoBtn">Abort</button>
+      </div>
+      <div class="chips">
+      </div>
+    </div>
+    <div class="glass card">
+      <div class="stat-grid">
+        <div class="stat"><p>Mode</p><h3 id="modeLabel">Manual</h3></div>
+        <div class="stat"><p>Auto phase</p><h3 id="autoPhase">idle</h3></div>
+        <div class="stat"><p>Battery</p><h3 id="batteryStat">-- V</h3></div>
+        <div class="stat"><p>Turbidity</p><h3 id="turbidityStat">-- NTU</h3></div>
+      </div>
+      <p class="small">Safety prechecks: leak clear · link healthy · battery above threshold.</p>
+    </div>
+  </section>
+
+  <section id="dashboard" class="panel-grid">
+    <div class="panel wide">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Live video</p>
+          <h3>Operator view</h3>
+        </div>
+        <button class="pill subtle" id="recordBtn">Record clip</button>
+      </div>
+      <div class="video-frame" id="videoFrame">Video stream placeholder (RTSP/HLS/WebRTC endpoint)</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><p class="eyebrow">Manual control</p><h3>Stick + trims</h3></div>
+      <form id="manualForm" class="control-form">
+        <label>Thruster speed <span id="thrusterValue" class="value-chip">0%</span>
+          <input id="thrusterSlider" type="range" min="0" max="1" step="0.01" value="0">
+          <div class="speed-meter"><div id="thrusterFill" class="speed-fill"></div></div>
+        </label>
+        <label>Servo Up <span id="servoUpValue" class="value-chip">0%</span>
+          <input id="servoUp" type="range" min="0" max="1" step="0.01" value="0">
+          <div class="speed-meter"><div id="servoUpFill" class="speed-fill"></div></div>
+        </label>
+        <label>Servo Left <span id="servoLeftValue" class="value-chip">0%</span>
+          <input id="servoLeft" type="range" min="0" max="1" step="0.01" value="0">
+          <div class="speed-meter"><div id="servoLeftFill" class="speed-fill"></div></div>
+        </label>
+        <label>Servo Right <span id="servoRightValue" class="value-chip">0%</span>
+          <input id="servoRight" type="range" min="0" max="1" step="0.01" value="0">
+          <div class="speed-meter"><div id="servoRightFill" class="speed-fill"></div></div>
+        </label>
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="stopBtn">Stop (all off)</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel" id="auto">
+      <div class="panel-head"><p class="eyebrow">Auto brain</p><h3>Tasks + guardrails</h3></div>
+      <form id="autoForm" class="control-form">
+        <label>Task
+          <select name="task" id="autoTask">
+            <option value="inspect">Inspect</option>
+            <option value="follow">Follow target</option>
+            <option value="survey">Survey path</option>
+            <option value="return">Return to surface</option>
+          </select>
+        </label>
+        <label>Phase
+          <input type="text" name="phase" id="autoPhaseInput" value="idle">
+        </label>
+        <label>Note
+          <input type="text" name="note" id="autoNote" placeholder="e.g., sweeping east" />
+        </label>
+        <div class="btn-row">
+          <button type="submit" class="btn primary">Update Auto</button>
+          <button type="button" class="btn ghost" id="pauseAutoBtn">Pause</button>
+        </div>
+      </form>
+      <div class="notice">Two-stage behavior: Arm → Start; operator moves stick to pause Auto immediately.</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><p class="eyebrow">Telemetry</p><h3>Vitals</h3></div>
+      <div class="telemetry-grid" id="telemetryGrid"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><p class="eyebrow">Events</p><h3>Alerts</h3></div>
+      <ul class="list" id="eventsList"></ul>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><p class="eyebrow">Missions</p><h3>Log</h3></div>
+      <div class="mission-list" id="missionList"></div>
+      <div class="upload-box">
+        <p class="eyebrow">Target image</p>
+        <form id="targetForm" class="control-form" enctype="multipart/form-data">
+          <label>Label
+            <input type="text" name="label" id="targetLabel" placeholder="e.g., buoy marker" />
+          </label>
+          <label>Image file
+            <input type="file" name="image" id="targetImage" accept="image/*" required />
+          </label>
+          <input type="hidden" name="mission_id" id="targetMissionId" />
+          <div class="btn-row">
+            <button type="submit" class="btn primary">Upload target</button>
+          </div>
+        </form>
+        <div class="target-list" id="targetList"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="logs">
+      <div class="panel-head"><p class="eyebrow">Recordings</p><h3>Video clips</h3></div>
+      <ul class="list" id="clipsList"></ul>
+    </div>
+  </section>
+</main>
+{% endblock %}
